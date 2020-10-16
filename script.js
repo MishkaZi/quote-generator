@@ -33,7 +33,7 @@ async function getQuote() {
     } else {
       authorText.innerText = data.quoteAuthor;
     }
-    //Reducere font size in case of long quotes
+    //Reduce font size in case of long quotes
     if (data.quoteText.length > 120) {
       quoteText.classList.add('long-quote');
     } else {
@@ -41,7 +41,7 @@ async function getQuote() {
     }
 
     quoteText.innerText = data.quoteText;
-    //Stopping loader
+   
     removeLoadingSpinner();
   } catch (error) {
     if (errorCounter < 10) {
