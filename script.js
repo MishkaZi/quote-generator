@@ -5,6 +5,7 @@ const twitterBtn = document.getElementById('twitter');
 const newQuoteBtn = document.getElementById('new-quote');
 const loader = document.getElementById('loader');
 var errorCounter = 0;
+let apiQuotes = [];
 
 function showLoadingSpinner() {
   loader.hidden = false;
@@ -18,30 +19,35 @@ function removeLoadingSpinner() {
   }
 }
 
+function newQuote() {
+  const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
+  authorText.textContent = quote.author;
+  quoteText.textContent = quote.text;
+  //If there is no author
+  if (!quote.author) {
+    authorText.innerText = 'Unknown';
+  } else {
+    authorText.innerText = quote.author;
+  }
+  //Reduce font size in case of long quotes
+  if (quote.text.length > 120) {
+    quoteText.classList.add('long-quote');
+  } else {
+    quoteText.classList.remove('long-quote');
+  }
+
+  quoteText.textContent = quote.text;
+}
+
 //Get quote from API
 async function getQuote() {
   showLoadingSpinner();
-  const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-  const apiUrl =
-    'http://api.forismatic.com/api/1.0/?method=getQuote&lang=eng&format=json';
+  const apiUrl = 'https://type.fit/api/quotes';
   try {
-    const response = await fetch(proxyUrl + apiUrl);
-    const data = await response.json();
-    //If there is no author
-    if (data.quoteAuthor === '') {
-      authorText.innerText = 'Unknown';
-    } else {
-      authorText.innerText = data.quoteAuthor;
-    }
-    //Reduce font size in case of long quotes
-    if (data.quoteText.length > 120) {
-      quoteText.classList.add('long-quote');
-    } else {
-      quoteText.classList.remove('long-quote');
-    }
+    const response = await fetch(apiUrl);
+    apiQuotes = await response.json();
+    newQuote();
 
-    quoteText.innerText = data.quoteText;
-   
     removeLoadingSpinner();
   } catch (error) {
     if (errorCounter < 10) {
